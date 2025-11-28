@@ -1,5 +1,5 @@
 [build]
-builder = "heroku/buildpacks"
+engine = "buildpacks"
 
 [deploy]
-command = "node app.js"
+start = "node app.js"
