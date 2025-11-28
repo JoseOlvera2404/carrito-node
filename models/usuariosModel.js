@@ -1,19 +1,23 @@
-const db = require('./db');
+const db = require("./db");
 
 const Usuarios = {
-    registrar: (nombre, email, password, callback) => {
+
+    registrar: async (nombre, email, password) => {
         const sql = "INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)";
-        db.query(sql, [nombre, email, password], callback);
+        const [result] = await db.query(sql, [nombre, email, password]);
+        return result.insertId;
     },
 
-    login: (email, password, callback) => {
+    login: async (email, password) => {
         const sql = "SELECT * FROM usuarios WHERE email = ? AND password = ?";
-        db.query(sql, [email, password], callback);
+        const [rows] = await db.query(sql, [email, password]);
+        return rows[0];
     },
 
-    obtenerPorId: (id, callback) => {
+    obtenerPorId: async (id) => {
         const sql = "SELECT * FROM usuarios WHERE id = ?";
-        db.query(sql, [id], callback);
+        const [rows] = await db.query(sql, [id]);
+        return rows[0];
     }
 };
 

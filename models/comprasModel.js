@@ -2,26 +2,25 @@ const db = require("./db");
 
 const Compras = {
 
-    // Crear una compra
-    crearCompra: (usuario_id, total, callback) => {
+    crearCompra: async (usuario_id, total) => {
         const sql = `
             INSERT INTO compras (usuario_id, total)
             VALUES (?, ?)
         `;
-        db.query(sql, [usuario_id, total], callback);
+        const [result] = await db.query(sql, [usuario_id, total]);
+        return result.insertId;
     },
 
-    // Agregar detalle a una compra
-    agregarDetalle: (compra_id, producto_id, cantidad, subtotal, callback) => {
+    agregarDetalle: async (compra_id, producto_id, cantidad, subtotal) => {
         const sql = `
             INSERT INTO compras_detalle (compra_id, producto_id, cantidad, subtotal)
             VALUES (?, ?, ?, ?)
         `;
-        db.query(sql, [compra_id, producto_id, cantidad, subtotal], callback);
+        const [result] = await db.query(sql, [compra_id, producto_id, cantidad, subtotal]);
+        return result.insertId;
     },
 
-    // Obtener historial completo de compras de un usuario
-    obtenerHistorial: (usuario_id, callback) => {
+    obtenerHistorial: async (usuario_id) => {
         const sql = `
             SELECT 
                 c.id AS compra_id, 
@@ -38,10 +37,11 @@ const Compras = {
             WHERE c.usuario_id = ?
             ORDER BY c.fecha DESC
         `;
-        db.query(sql, [usuario_id], callback);
+        const [rows] = await db.query(sql, [usuario_id]);
+        return rows;
     },
 
-    obtenerDetalleCompra: (compra_id, callback) => {
+    obtenerDetalleCompra: async (compra_id) => {
         const sql = `
             SELECT 
                 c.id AS compra_id,
@@ -57,9 +57,9 @@ const Compras = {
             INNER JOIN productos p ON p.id = d.producto_id
             WHERE c.id = ?
         `;
-        db.query(sql, [compra_id], callback);
+        const [rows] = await db.query(sql, [compra_id]);
+        return rows;
     }
-
 };
 
 module.exports = Compras;

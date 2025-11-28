@@ -1,38 +1,44 @@
-const db = require('./db');
+const db = require("./db");
 
 const Carrito = {
-    obtenerCarrito: (usuario_id, callback) => {
+
+    obtenerCarrito: async (usuario_id) => {
         const sql = `
             SELECT c.id, c.producto_id, c.cantidad, p.nombre, p.precio, p.imagen
             FROM carrito c
             INNER JOIN productos p ON c.producto_id = p.id
             WHERE c.usuario_id = ?
         `;
-        db.query(sql, [usuario_id], callback);
+        const [rows] = await db.query(sql, [usuario_id]);
+        return rows;
     },
 
-    agregarProducto: (usuario_id, producto_id, callback) => {
+    agregarProducto: async (usuario_id, producto_id) => {
         const sql = `
             INSERT INTO carrito (usuario_id, producto_id, cantidad)
             VALUES (?, ?, 1)
             ON DUPLICATE KEY UPDATE cantidad = cantidad + 1
         `;
-        db.query(sql, [usuario_id, producto_id], callback);
+        const [result] = await db.query(sql, [usuario_id, producto_id]);
+        return result;
     },
 
-    cambiarCantidad: (carrito_id, cantidad, callback) => {
+    cambiarCantidad: async (carrito_id, cantidad) => {
         const sql = "UPDATE carrito SET cantidad = ? WHERE id = ?";
-        db.query(sql, [cantidad, carrito_id], callback);
+        const [result] = await db.query(sql, [cantidad, carrito_id]);
+        return result;
     },
 
-    eliminarProducto: (carrito_id, callback) => {
+    eliminarProducto: async (carrito_id) => {
         const sql = "DELETE FROM carrito WHERE id = ?";
-        db.query(sql, [carrito_id], callback);
+        const [result] = await db.query(sql, [carrito_id]);
+        return result;
     },
 
-    vaciarCarrito: (usuario_id, callback) => {
+    vaciarCarrito: async (usuario_id) => {
         const sql = "DELETE FROM carrito WHERE usuario_id = ?";
-        db.query(sql, [usuario_id], callback);
+        const [result] = await db.query(sql, [usuario_id]);
+        return result;
     }
 };
 
