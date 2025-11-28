@@ -1,5 +1,0 @@
-[build]
-engine = "buildpacks"
-
-[deploy]
-start = "node app.js"
