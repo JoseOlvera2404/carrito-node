@@ -1,0 +1,21 @@
+<%- include("partials/header", { title: "Productos", user }) %>
+
+<h2>Todos los productos</h2>
+
+<div class="productos-grid">
+    <% productos.forEach(p => { %>
+        <div class="producto-card">
+            <img src="/<%= p.imagen %>" alt="<%= p.nombre %>" class="producto-img">
+            <h3><%= p.nombre %></h3>
+            <p><%= p.descripcion %></p>
+            <p>$<%= p.precio %></p>
+
+            <form action="/carrito/agregar" method="POST">
+                <input type="hidden" name="id" value="<%= p.id %>">
+                <button type="submit">Agregar al carrito</button>
+            </form>
+        </div>
+    <% }) %>
+</div>
+
+<%- include("partials/footer") %>

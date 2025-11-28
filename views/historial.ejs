@@ -1,0 +1,20 @@
+<%- include("partials/header", { title: "Historial de compras", user }) %>
+
+<h2>Historial de compras</h2>
+
+<% if (historial.length === 0) { %>
+    <p>No tienes compras registradas.</p>
+<% } else { %>
+    <ul>
+        <% historial.forEach(c => { %>
+            <li>
+                <strong>Compra <%= c.id %></strong> - 
+                Total: $<%= c.total %> -
+                Fecha: <%= c.fecha %> -
+                <a href="/historial/ticket/<%= c.compra_id %>">Ver ticket</a>
+            </li>
+        <% }) %>
+    </ul>
+<% } %>
+
+<%- include("partials/footer") %>

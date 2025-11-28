@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title || "Mi Tienda" %></title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/">Inicio</a>
+            <a href="/productos">Productos</a>
+
+            <% if (user) { %>
+                <a href="/carrito">Carrito</a>
+                <a href="/historial">Historial</a>
+                <span>Hola, <%= user.nombre %></span>
+                <a href="/auth/logout">Salir</a>
+            <% } else { %>
+                <a href="/auth/login">Login</a>
+                <a href="/auth/register">Registro</a>
+            <% } %>
+        </nav>
+    </header>
+
+    <main>

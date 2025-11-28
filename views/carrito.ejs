@@ -1,0 +1,30 @@
+<%- include("partials/header", { title: "Carrito", user }) %>
+<h2>Mi carrito</h2>
+<% if (carrito.length === 0) { %>
+<p>No tienes productos en el carrito.</p>
+<% } else { %>
+<table>
+  <tr>
+    <th>Producto</th>
+    <th>Cantidad</th>
+    <th>Precio</th>
+    <th>Total</th>
+    <th>Acciones</th>
+  </tr>
+  <% carrito.forEach(item => { %>
+  <tr>
+    <td>
+      <img src="/<%= item.imagen %>" alt="<%= item.nombre %>" style="width:60px; border-radius:5px;">
+      <%= item.nombre %>
+    </td>
+    <td><%= item.cantidad %></td>
+    <td>$<%= item.precio %></td>
+    <td>$<%= item.precio * item.cantidad %></td>
+    <td><a href="/carrito/eliminar/<%= item.id %>">Quitar</a></td>
+  </tr>
+  <% }) %>
+</table>
+<form action="/carrito/comprar" method="POST">
+  <button type="submit">Confirmar compra</button>
+</form>
+<% } %> <%- include("partials/footer") %>

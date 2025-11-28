@@ -1,0 +1,51 @@
+<%- include("partials/header", { title: "Inicio", user }) %>
+
+<!-- Hero / Banner -->
+<section class="hero">
+    <div class="hero-text">
+        <h1>Bienvenido a <span class="brand">MiTienda</span></h1>
+        <p>Encuentra los mejores productos electrónicos al mejor precio</p>
+        <a href="/productos" class="btn-primary">Ver productos</a>
+    </div>
+    <div class="hero-img">
+        <img src="/img/hero.jpeg" alt="Electrónica" />
+    </div>
+</section>
+
+<!-- Productos destacados -->
+<section class="destacados">
+    <h2>Productos destacados</h2>
+    <div class="productos-grid">
+        <% productos.slice(0, 3).forEach(p => { %> <!-- Solo los primeros 5 -->
+            <div class="producto-card">
+                <img src="/<%= p.imagen %>" alt="<%= p.nombre %>" class="producto-img">
+                <h3><%= p.nombre %></h3>
+                <p><%= p.descripcion %></p>
+                <p class="precio">$<%= p.precio %></p>
+
+                <form action="/carrito/agregar" method="POST">
+                    <input type="hidden" name="id" value="<%= p.id %>">
+                    <button type="submit">Agregar al carrito</button>
+                </form>
+            </div>
+        <% }) %>
+    </div>
+</section>
+
+<!-- Promociones / Info -->
+<section class="promociones">
+    <div class="promo-card">
+        <h3>Envío gratis</h3>
+        <p>En todas tus compras mayores a $2000</p>
+    </div>
+    <div class="promo-card">
+        <h3>Garantía 1 año</h3>
+        <p>Todos nuestros productos incluyen garantía oficial</p>
+    </div>
+    <div class="promo-card">
+        <h3>Atención 24/7</h3>
+        <p>Estamos para ayudarte en todo momento</p>
+    </div>
+</section>
+
+<%- include("partials/footer") %>

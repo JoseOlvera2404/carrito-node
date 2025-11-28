@@ -1,0 +1,78 @@
+CREATE TABLE usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(100),
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(150),
+    descripcion TEXT,
+    precio DECIMAL(10,2),
+    imagen VARCHAR(255)  -- ruta en /public/img
+);
+CREATE TABLE carrito (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT,
+    producto_id INT,
+    cantidad INT DEFAULT 1,
+
+    UNIQUE(usuario_id, producto_id),
+
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+CREATE TABLE compras (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_id INT,
+    total DECIMAL(10,2),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+CREATE TABLE compras_detalle (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    compra_id INT,
+    producto_id INT,
+    cantidad INT,
+    subtotal DECIMAL(10,2),
+    FOREIGN KEY (compra_id) REFERENCES compras(id),
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+INSERT INTO usuarios (nombre, email, password)
+VALUES
+('Juan Pérez', 'juan@example.com', 'hashedpass1'),
+('María López', 'maria@example.com', 'hashedpass2'),
+('Carlos Ruiz', 'carlos@example.com', 'hashedpass3');
+INSERT INTO productos (nombre, descripcion, precio, imagen)
+VALUES
+('Laptop Pro 15"', 'Laptop de alta gama con 16GB RAM y SSD 512GB', 24999.99, 'img/laptop.webp'),
+('Mouse Gamer RGB', 'Mouse gamer con iluminación RGB', 599.00, 'img/mouse.webp'),
+('Teclado Mecánico', 'Teclado mecánico switches azules', 1299.00, 'img/teclado.webp'),
+('Monitor 27"', 'Monitor FullHD 144Hz', 4899.00, 'img/monitor.webp'),
+('Audífonos Gaming', 'Audífonos con sonido envolvente y micrófono', 899.00, 'img/audifonos.webp'),
+('Webcam HD', 'Cámara web 1080p para streaming y videollamadas', 1199.00, 'img/webcam.webp'),
+('SSD 1TB', 'Disco sólido de 1TB para mayor velocidad', 2499.00, 'img/ssd.webp'),
+('Memoria RAM 16GB', 'DDR4 3200MHz para mejorar el rendimiento', 1299.00, 'img/ram.webp'),
+('Silla Gamer', 'Silla ergonómica con soporte lumbar y reclinable', 3599.00, 'img/silla.webp'),
+('Placa Base Gaming', 'Motherboard con chipset avanzado para gaming', 2799.00, 'img/placa_base.jpeg'),
+('Procesador i7 12700K', 'Procesador Intel de 12ª generación', 8499.00, 'img/procesador.jpeg'),
+('Fuente 650W', 'Fuente de poder certificada 80 Plus Bronze', 1499.00, 'img/fuente.jpeg');
+INSERT INTO carrito (usuario_id, producto_id, cantidad)
+VALUES
+(1, 1, 1),  -- Juan: Laptop
+(1, 2, 2),  -- Juan: 2 Mouse
+(2, 3, 1),  -- María: Teclado
+(2, 4, 1);  -- María: Monitor
+INSERT INTO compras (usuario_id, total)
+VALUES
+(1, 26197.99),  -- Juan: laptop + 2 mouse
+(2, 6198.00);   -- María: teclado + monitor
+INSERT INTO compras_detalle (compra_id, producto_id, cantidad, subtotal)
+VALUES
+(1, 1, 1, 24999.99),
+(1, 2, 2, 1198.00);
+INSERT INTO compras_detalle (compra_id, producto_id, cantidad, subtotal)
+VALUES
+(2, 3, 1, 1299.00),
+(2, 4, 1, 4899.00);
