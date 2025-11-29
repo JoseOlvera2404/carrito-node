@@ -9,11 +9,20 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Sesiones
+// -------------------------------
+// SESIONES (corregido)
+// -------------------------------
+const isProd = process.env.NODE_ENV === "production";
+
 app.use(session({
     secret: process.env.SESSION_SECRET || "carrito123",
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: isProd,
+        maxAge: 1000 * 60 * 60 * 24
+    },
+    store: isProd ? undefined : new session.MemoryStore()
 }));
 
 // Middleware GLOBAL para acceso a usuario en TODAS las vistas
@@ -30,10 +39,10 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Rutas con prefijos claros
-app.use("/", require("./routes/productos.routes"));      // Página principal y /productos
-app.use("/auth", require("./routes/auth.routes"));        // login, register, logout
-app.use("/carrito", require("./routes/carrito.routes"));  // añadir, ver, comprar
-app.use("/historial", require("./routes/historial.routes")); // historial y tickets
+app.use("/", require("./routes/productos.routes"));
+app.use("/auth", require("./routes/auth.routes"));
+app.use("/carrito", require("./routes/carrito.routes"));
+app.use("/historial", require("./routes/historial.routes"));
 
 // Manejo de errores 404
 app.use((req, res) => {
@@ -42,7 +51,6 @@ app.use((req, res) => {
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
-// *** AQUI EL CAMBIO PARA RAILWAY ***
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`Servidor corriendo en puerto ${PORT}`);
 });
