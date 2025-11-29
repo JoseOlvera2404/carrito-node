@@ -1,4 +1,4 @@
-const mysql = require("mysql2/promise");
+const mysql = require("mysql2");
 
 const pool = mysql.createPool({
     host: process.env.MYSQLHOST || process.env.DB_HOST,
@@ -11,9 +11,14 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// Probar conexión sin romper el servidor
-pool.getConnection()
-    .then(() => console.log("Conectado a MySQL (Railway)"))
-    .catch(err => console.error("Error de conexión MySQL:", err.message));
+// Probar conexión
+pool.getConnection((err, conn) => {
+    if (err) {
+        console.error("Error de conexión MySQL:", err.message);
+    } else {
+        console.log("Conectado a MySQL (Railway)");
+        conn.release();
+    }
+});
 
 module.exports = pool;
