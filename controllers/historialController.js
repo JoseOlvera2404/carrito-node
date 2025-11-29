@@ -1,13 +1,13 @@
 const Compras = require("../models/comprasModel");
 
 const historialController = {
-    verHistorial: (req, res) => {
+
+    verHistorial: async (req, res) => {
         if (!req.session.userID) return res.redirect("/auth/login");
 
-        Compras.obtenerHistorial(req.session.userID, (err, historial) => {
-            if (err) throw err;
+        try {
+            const historial = await Compras.obtenerHistorial(req.session.userID);
 
-            // Crear un array con compras únicas
             const comprasUnicas = [];
             const ids = new Set();
 
@@ -26,25 +26,27 @@ const historialController = {
                 usuario: req.session.user,
                 historial: comprasUnicas
             });
-        });
+
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Error cargando historial");
+        }
     },
 
-    verTicket: (req, res) => {
-        const { id } = req.params;
-
-        Compras.obtenerDetalleCompra(id, (err, compraItems) => {
-            if (err) throw err;
+    verTicket: async (req, res) => {
+        try {
+            const compraItems = await Compras.obtenerDetalleCompra(req.params.id);
 
             if (compraItems.length === 0) return res.redirect("/historial");
 
             const compra = {
-                id,
+                id: req.params.id,
                 fecha: compraItems[0].fecha,
                 total: compraItems.reduce((s, i) => s + Number(i.subtotal), 0),
-                items: compraItems.map(item => ({
-                    ...item,
-                    precio: Number(item.precio),
-                    subtotal: Number(item.subtotal)
+                items: compraItems.map(i => ({
+                    ...i,
+                    precio: Number(i.precio),
+                    subtotal: Number(i.subtotal)
                 }))
             };
 
@@ -52,9 +54,12 @@ const historialController = {
                 usuario: req.session.user,
                 compra
             });
-        });
-    }
 
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Error mostrando ticket");
+        }
+    }
 };
 
 module.exports = historialController;

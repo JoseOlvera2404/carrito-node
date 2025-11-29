@@ -1,28 +1,31 @@
 const Productos = require("../models/productosModel");
 
 const productosController = {
-    // Página principal
-    inicio: (req, res) => {
-        Productos.obtenerTodos((err, productos) => {
-            if (err) throw err;
 
+    inicio: async (req, res) => {
+        try {
+            const productos = await Productos.obtenerTodos();
             res.render("index", {
                 usuario: req.session.user,
                 productos
             });
-        });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Error cargando productos");
+        }
     },
 
-    // Página de todos los productos
-    listar: (req, res) => {
-        Productos.obtenerTodos((err, productos) => {
-            if (err) throw err;
-
+    listar: async (req, res) => {
+        try {
+            const productos = await Productos.obtenerTodos();
             res.render("productos", {
                 usuario: req.session.user,
                 productos
             });
-        });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Error listando productos");
+        }
     }
 };
 

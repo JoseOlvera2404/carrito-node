@@ -1,42 +1,47 @@
 const Usuarios = require("../models/usuariosModel");
 
 const authController = {
-    mostrarLogin: (req, res) => {
-        res.render("login");
-    },
 
-    mostrarRegistro: (req, res) => {
-        res.render("register");
-    },
+    mostrarLogin: (req, res) => res.render("login"),
 
-    registrar: (req, res) => {
+    mostrarRegistro: (req, res) => res.render("register"),
+
+    registrar: async (req, res) => {
         const { nombre, email, password } = req.body;
 
-        Usuarios.registrar(nombre, email, password, (err) => {
-            if (err) throw err;
+        try {
+            await Usuarios.registrar(nombre, email, password);
             res.redirect("/auth/login");
-        });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Error registrando usuario");
+        }
     },
 
-    login: (req, res) => {
+    login: async (req, res) => {
         const { email, password } = req.body;
 
-        Usuarios.login(email, password, (err, usuario) => {
-            if (err) throw err;
+        try {
+            const usuario = await Usuarios.login(email, password);
 
-            if (usuario.length > 0) {
-                req.session.user = usuario[0];
-                req.session.userID = usuario[0].id;
-                res.redirect("/");
-            } else {
-                res.render("login", { error: "Correo o contraseña incorrectos" });
+            if (!usuario) {
+                return res.render("login", { error: "Correo o contraseña incorrectos" });
             }
-        });
+
+            req.session.user = usuario;
+            req.session.userID = usuario.id;
+
+            res.redirect("/");
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Error en login");
+        }
     },
 
     logout: (req, res) => {
-        req.session.destroy();
-        res.redirect("/");
+        req.session.destroy(() => {
+            res.redirect("/");
+        });
     }
 };
 
